@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package chatbot.ticket;
+
+option java_multiple_files = true;
+option java_package = "com.interview.chatbot.proto.ticket";
+option java_outer_classname = "TicketProto";
+
+service TicketService {
+  rpc CreateTicket(CreateTicketRequest) returns (CreateTicketResponse);
+}
+
+message CreateTicketRequest {
+  string user_id = 1;
+  string question = 2;
+  string reason = 3;
+}
+
+message CreateTicketResponse {
+  int64 ticket_id = 1;
+  string status = 2;
+  string message = 3;
+}

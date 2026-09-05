@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: kb-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/agentic_chatbot_dev
+    username: ${DB_USERNAME:kunalagarwal}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: false

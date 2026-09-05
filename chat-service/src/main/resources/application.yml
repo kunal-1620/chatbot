@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: chat-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  grpc:
+    client:
+      channel:
+        ticket-service:
+          target: static://localhost:9093
