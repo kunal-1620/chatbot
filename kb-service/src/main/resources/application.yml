@@ -12,7 +12,3 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: false
-  ai:
-    vectorstore:
-      pgvector:
-        initialize-schema: false

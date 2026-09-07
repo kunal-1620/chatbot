@@ -1,6 +1,6 @@
 # Agentic Support Chatbot
 
-Interview project showing a small local system with REST, gRPC, PostgreSQL + pgvector, Redis, Kafka, and React.
+Interview project showing a small local system with REST, gRPC, PostgreSQL, Redis, Kafka, and React.
 
 ## Architecture
 
@@ -8,7 +8,7 @@ Interview project showing a small local system with REST, gRPC, PostgreSQL + pgv
 React UI
   -> REST -> chat-service :8080
              -> REST -> kb-service :8081
-             -> gRPC -> ticket-service :9093
+             -> gRPC -> ticket-service :9094
 
 chat-service   -> Redis localhost:6379
 kb-service     -> PostgreSQL localhost:5432
@@ -23,8 +23,6 @@ Run these manually. Codex should not mutate PostgreSQL, Redis, or Kafka state un
 PostgreSQL:
 
 ```sql
-CREATE EXTENSION IF NOT EXISTS vector;
-
 CREATE TABLE IF NOT EXISTS knowledge_articles (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
@@ -63,13 +61,26 @@ Redis smoke test:
 From the project root:
 
 ```bash
-mvn clean package
+mvn clean install
+```
+
+This installs the shared `common-protos` module into your local Maven repository. Do this before starting `ticket-service` or `chat-service` in separate terminal tabs.
+
+Then run each service in a separate terminal tab:
+
+```bash
 mvn -pl kb-service spring-boot:run
 mvn -pl ticket-service spring-boot:run
 mvn -pl chat-service spring-boot:run
 ```
 
-Run each service in a separate terminal tab.
+If `ticket-service` fails with `Failed to start bean 'nettyGrpcServerLifecycle'`, check whether another process is already using the gRPC port:
+
+```bash
+lsof -nP -iTCP:9094 -sTCP:LISTEN
+```
+
+Stop the existing process before starting another `ticket-service` instance, or change `spring.grpc.server.port` in `ticket-service/src/main/resources/application.yml`.
 
 ## Run Frontend
 

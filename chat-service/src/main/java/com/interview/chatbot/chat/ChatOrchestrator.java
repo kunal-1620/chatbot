@@ -23,6 +23,18 @@ class ChatOrchestrator {
     }
 
     ChatResponse handle(ChatRequest request) {
+        if (request.message() == null || request.message().isBlank()) {
+            return new ChatResponse("Please enter a question.", "chat-service", 100, null);
+        }
+
+        if (isGreeting(request.message())) {
+            return new ChatResponse(
+                    "Hi. Ask me a support question, and I will search the knowledge base first.",
+                    "chat-service",
+                    100,
+                    null);
+        }
+
         cacheLastQuestion(request);
 
         KnowledgeSearchResponse kbResponse = this.kbClient.post()
@@ -48,5 +60,14 @@ class ChatOrchestrator {
     private void cacheLastQuestion(ChatRequest request) {
         String userId = request.userId() == null || request.userId().isBlank() ? "anonymous" : request.userId();
         this.redisTemplate.opsForValue().set("chat:last-question:" + userId, request.message());
+    }
+
+    private static boolean isGreeting(String message) {
+        String normalized = message.trim().toLowerCase();
+        return normalized.equals("hi")
+                || normalized.equals("hello")
+                || normalized.equals("hey")
+                || normalized.equals("hi there")
+                || normalized.equals("hello there");
     }
 }

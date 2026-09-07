@@ -12,4 +12,4 @@ spring:
     client:
       channel:
         ticket-service:
-          target: static://localhost:9093
+          target: static://localhost:9094

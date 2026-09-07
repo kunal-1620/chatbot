@@ -28,13 +28,22 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: "demo-user", message: text })
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Chat service returned ${response.status}`);
+      }
+
       const data = await response.json();
+      const answer = data.answer ?? "The chat service returned an unexpected response.";
+      const source = data.source ?? "unknown";
+      const confidence = data.confidence ?? 0;
       setMessages((current) => [
         ...current,
         {
           role: "assistant",
-          text: data.answer,
-          meta: `${data.source} · confidence ${data.confidence}%`
+          text: answer,
+          meta: `${source} · confidence ${confidence}%`
         }
       ]);
     } catch (error) {
